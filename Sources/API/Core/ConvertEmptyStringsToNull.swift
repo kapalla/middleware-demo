@@ -12,7 +12,19 @@ struct ConvertEmptyStringsToNull: AsyncMiddleware {
         }
       }
 
-      print(body.string ?? "") // replace it with something like: `request.body = body``
+      let newRequest = Request(
+        application: request.application,
+        method: request.method,
+        url: request.url,
+        version: request.version,
+        headers: request.headers,
+        collectedBody: body.jsonBuffer,
+        remoteAddress: request.remoteAddress,
+        logger: request.logger,
+        byteBufferAllocator: request.byteBufferAllocator,
+        on: request.eventLoop)
+
+      return try await next.respond(to: newRequest)
     }
 
     return try await next.respond(to: request)
