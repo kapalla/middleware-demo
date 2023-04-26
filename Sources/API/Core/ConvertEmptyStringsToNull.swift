@@ -24,6 +24,8 @@ struct ConvertEmptyStringsToNull: AsyncMiddleware {
         byteBufferAllocator: request.byteBufferAllocator,
         on: request.eventLoop)
 
+      newRequest.parameters = request.parameters
+
       return try await next.respond(to: newRequest)
     }
 
